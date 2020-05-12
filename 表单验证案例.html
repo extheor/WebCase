@@ -239,6 +239,12 @@
 		   }
 		   
 		   function checkConfirmPwd() {
+			   if (confirmPassword.value === "") {
+				   confirmError.textContent = "密码不能为空"
+				   confirmError.style.display = "block"
+				   confirmSuccess.style.display = "none"
+				   return false
+			   }
 			   if (password.value !== confirmPassword.value) {
 				   confirmError.textContent = "密码不一致,请重新输入"
 				   confirmError.style.display = "block"
