@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>表单验证案例</title>
+	</head>
+	<style type="text/css">
+		* {
+			box-sizing: border-box;
+		}
+		
+		body {
+			background-image: url(img/2015263.jpg);
+			background-repeat: no-repeat;
+		}
+		
+		#form {
+			width: 500px;
+			height: 800px;
+			margin: 50px auto;
+		}
+		
+		#form h1 {
+			color: #DCD75F;
+		}
+		
+		.model {
+			width: 480px;
+			height: 52px;
+			margin-bottom: 40px;
+			position: relative;
+		}
+		
+		.model input {
+			width: 100%;
+			height: 100%;
+			border: 1px solid #aaa;
+			border-radius: 4px;
+			font-size: 20px;
+			color: #aaa;
+			padding-left: 20px;
+			outline: none;
+		}
+		
+		.model input:focus {
+			border: 1px solid #549df8;
+		}
+		
+		#submit {
+			width: 480px;
+			height: 60px;
+			background-color: #3083ff;
+			border: none;
+			outline: none;
+			border-radius: 4px;
+			box-shadow: 0 5px 8px 0 rgba(24,95,255,.1);
+			text-align: center;
+			font-weight: lighter;
+			color: #fff;
+			font-size: 24px;
+		}
+		
+		.model .error {
+			color: red;
+			display: none;
+		}
+		
+		.model .success {
+			width: 40px;
+			height: 100%;
+			position: absolute;
+			top: 0px;
+			left: 440px;
+			border-radius: 4px;
+			background-image: url(img/benefits.png);
+			background-size: 100%;
+			background-position: 0;
+			display: none;
+		}
+		
+		.model .tips {
+			display: none;
+		}
+	</style>
+	<body>
+		<form id="form" action="#">
+			<h1>欢迎注册我的网页</h1>
+			<div class="model">
+				<!-- 
+					placeholder - 点击输入框 输入框中的原提示文字不消失 光标停留在前面，开始输入文字后消失
+				 -->
+				<input type="text" id="username" placeholder="用户名">
+				<div class="error name_error"></div>
+				<div class="success name_success"></div>
+			</div>
+			<div class="model" id="pwd_model">
+				<input type="password" id="password" placeholder="密码">
+				<div class="error pwd_error"></div>
+				<div class="success pwd_success"></div>
+				<div class="tips">不能包括空格</div>
+				<div class="tips">长度为8-16个字符</div>
+				<div class="tips">必须包含字母、数字、符号中至少2种</div>
+			</div>
+			<div class="model">
+				<input type="password" id="confirm_password" placeholder="重复密码">
+				<div class="error confirm_error"></div>
+				<div class="success confirm_success"></div>
+			</div>
+			<input type="submit" id="submit" value="立即注册">
+		</form>
+		<script type="text/javascript">
+			// 获取所有的input输入框
+			var username = document.getElementById("username")
+			var password = document.getElementById("password")
+			var confirmPassword = document.getElementById("confirm_password")
+			var submit = document.getElementById("submit")
+			
+			// 获取到所有的错误提示div
+			var nameError = document.getElementsByClassName("name_error")[0]
+			var pwdError = document.getElementsByClassName("pwd_error")[0]
+			var confirmError = document.getElementsByClassName("confirm_error")[0]
+			
+			// 获取到所有的正确提示div
+			var nameSuccess = document.getElementsByClassName("name_success")[0]
+			var pwdSuccess = document.getElementsByClassName("pwd_success")[0]
+			var confirmSuccess = document.getElementsByClassName("confirm_success")[0]
+			
+			// 获取密码规则的温馨提示
+			var tips = document.getElementsByClassName("tips")
+			
+			// 获取密码model
+			var pwdModel = document.getElementById("pwd_model")
+			
+			
+			
+			// 用户名随便写~(但是不能为空)
+			// username获得焦点时，提示
+			username.addEventListener("focus", function() {
+				// 点击这个输入框后，先把字体变成黑色的
+				username.style.color = "#000"
+			})
+			// username失去焦点时，验证
+			username.addEventListener("blur", checkName)
+			
+			/* 点击密码框，提示信息
+				* 获取焦点时，提示用户密码规则
+				* 失去焦点时，验证密码规则
+					* 如果错误则提示哪错了
+					* 如果正确则验证正确
+					* 如果密码为空，提示
+			*/
+		   password.addEventListener("focus", function() {
+			   // 点击这个输入框后，先把字体变成黑色的
+			   password.style.color = "#000"
+			   
+			   pwdError.textContent = ""
+			   for (var i = 0; i < tips.length; i++) {
+				   var tip = tips[i]
+				   tip.style.display = "block"
+				   pwdModel.style.marginBottom = "66px"
+			   }
+		   })
+		   
+		   // 设置规则
+		   /*
+			* 不能包含空格
+			* 长度为8-16个字符
+			* 必须包含字母、数字、符号中至少2种
+		   */
+		   password.addEventListener("blur", checkPwd)
+		   
+		   // 重复密码
+		   /*
+			比较是否和上面设置的密码一致
+		   */
+		   confirmPassword.addEventListener("focus", function() {
+			   // 点击这个输入框后，先把字体变成黑色的
+			   confirmPassword.style.color = "#000"
+		   })
+		   
+		   confirmPassword.addEventListener("blur", checkConfirmPwd)
+		   
+		   function checkName() {
+			  if (username.value === "") {
+				  console.log("用户名为空")
+				  nameError.textContent = "用户名不能为空"
+				  nameError.style.display = "block"
+				  nameSuccess.style.display = "none"
+				  return false
+			  } else {
+				  nameError.textContent = ""
+				  nameError.style.display = "none"
+				  // 提示正确
+				  nameSuccess.style.display = "block"
+				  return true
+			  }
+		   }
+		   
+		   function checkPwd() {
+			   for (var i = 0; i < tips.length; i++) {
+				   var tip = tips[i]
+				   tip.style.display = "none"
+			   }
+			   pwdModel.style.marginBottom = "40px"
+			   
+			   
+			   var noSpaceReg = /^[^\s]+$/
+			   var lenReg = /.{8,16}$/
+			   var leastTwoReg = /(?!.*\s)(?!^[\u4e00-\u9fa5]+$)(?!^[0-9]+$)(?!^[A-z]+$)(?!^[^A-z0-9]+$)^.{8,16}$/
+			   
+			   var pwdValue = password.value
+			   if (password.value === "") {
+				   pwdError.textContent = "密码不能为空"
+				   pwdError.style.display = "block"
+				   pwdSuccess.style.display = "none"
+				   return false
+			   } else if (!noSpaceReg.test(pwdValue)) {
+				   pwdError.textContent = "密码中不能包含空格"
+				   pwdError.style.display = "block"
+				   pwdSuccess.style.display = "none"
+				   return false
+			   } else if (!lenReg.test(pwdValue)) {
+				   pwdError.textContent = "密码长度为8-16位字符"
+				   pwdError.style.display = "block"
+				   pwdSuccess.style.display = "none"
+				   return false
+			   } else if (!leastTwoReg.test(pwdValue)) {
+				   pwdError.textContent = "密码中必须包含字母、数字、符号中至少2种"
+				   pwdError.style.display = "block"
+				   pwdSuccess.style.display = "none"
+				   return false
+			   } else if (noSpaceReg.test(pwdValue) && lenReg.test(pwdValue) && leastTwoReg.test(pwdValue)) {
+				   pwdError.textContent = ""
+				   pwdError.style.display = "none"
+				   // 提示正确
+				   pwdSuccess.style.display = "block"
+				   return true
+			   }
+		   }
+		   
+		   function checkConfirmPwd() {
+			   if (password.value !== confirmPassword.value) {
+				   confirmError.textContent = "密码不一致,请重新输入"
+				   confirmError.style.display = "block"
+				   confirmSuccess.style.display = "none"
+				   return false
+			   } else {
+				   confirmError.textContent = ""
+				   confirmSuccess.style.display = "block"
+				   return true
+			   }
+		   }
+		   
+		   // 提交注册
+		   submit.addEventListener("click", function(event) {
+			   if (!checkName() || !checkPwd() || !checkConfirmPwd()) {
+				   // 说明其中肯定有一项是不符合规则的，则不能提交
+				   event.preventDefault()
+			   }
+		   })
+		</script>
+	</body>
+</html>
