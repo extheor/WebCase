@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>整合</title>
+	</head>
+	<style type="text/css">
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+		
+		html {
+			
+		}
+		
+		body {
+			position: relative;
+			overflow: hidden;
+			background-color: #000;
+		}
+		
+		.leftEdge,
+		.rightEdge {
+			border-radius: 5px;
+			background: linear-gradient(180deg, #03a9f4, #f441a5, #ffeb3b, #03a9f4);
+			background-size: 400%;
+			
+			z-index: 1;
+			animation: sun 8s infinite;
+		}
+		.topEdge,
+		.bottomEdge {
+			border-radius: 5px;
+			background: linear-gradient(90deg, #03a9f4, #f441a5, #ffeb3b, #03a9f4);
+			background-size: 400%;
+			
+			z-index: 1;
+			animation: sun 8s infinite;
+		}
+		
+		.leftEdge::before {
+			width: 16px;
+		}
+		
+		.leftEdge::before,
+		.rightEdge::before,
+		.topEdge::before,
+		.bottomEdge::before {
+			content: "";
+			position: absolute;
+			left: -3px;
+			top: -3px;
+			right: -3px;
+			bottom: -3px;
+			background: linear-gradient(90deg, #03a9f4, #f441a5, #ffeb3b, #03a9f4);
+			background-size: 400%;
+			border-radius: 5px;
+			filter: blur(20px);
+			
+			z-index: -1;
+			animation: sun 8s infinite;
+		}
+		
+		.leftEdge {
+			width: 10px;
+			height: 100vh;
+		}
+		
+		.rightEdge {
+			width: 10px;
+			height: 0;
+			float: right;
+			
+			position: absolute;
+			top: 0;
+			bottom: 0;
+			right: 0;
+		}
+		
+		.topEdge {
+			width: 100%;
+			height: 10px;
+			
+			position: absolute;
+			left: 0;
+			top: 0;
+		}
+		
+		.bottomEdge {
+			width: 0px;
+			height: 10px;
+			
+			position: absolute;
+			left: 0;
+			top: 99vh;
+		}
+		
+		.box {
+			width: 10px;
+			height: 10px;
+			/* background-color: #FFF; */
+			border-radius: 50%;
+			box-shadow: 0 0 5px 5px #999999;
+			position: absolute;
+			left: 400px;
+			top: -10px;
+			
+			background: linear-gradient(90deg, #ffffff, #f441a5, #ffeb3b, #ffffff);
+			background-size: 400%;
+			
+			z-index: 1;
+			animation: sun 8s infinite;
+		}
+		
+		@keyframes sun{
+			100% {
+				background-position: -400% 0;
+			}
+		}
+	</style>
+	<body>
+		<div class="leftEdge"></div>
+		<div class="rightEdge"></div>
+		<div class="topEdge"></div>
+		<div class="bottomEdge"></div>
+		<script type="text/javascript">
+			// 获取leftEdge
+			var leftEdge = document.getElementsByClassName("leftEdge")[0]
+			var leftEdgeStyle = window.getComputedStyle(leftEdge)
+			
+			// 函数 -> 实现指定元素的高度值减少
+			function slideLeft() {
+				var leftEdgeHeight = parseFloat(leftEdgeStyle.height)
+				if (leftEdgeHeight <= 2) {
+					leftEdge.style.height = 100 + "vh"
+					slideLeft()
+				} else {
+					leftEdgeHeight--
+					leftEdge.style.height = leftEdgeHeight + "px"
+					setTimeout(slideLeft, 50)
+				}
+			}
+			slideLeft()
+			
+			// 获取rightEdge
+			var rightEdge = document.getElementsByClassName("rightEdge")[0]
+			var rightEdgeStyle = window.getComputedStyle(rightEdge)
+			
+			function slideRight() {
+				var leftEdgeHeight = parseFloat(leftEdgeStyle.height)
+				var rightEdgeHeight = parseFloat(rightEdgeStyle.height)
+				var pageHeight = window.innerHeight
+				if (rightEdgeHeight >= pageHeight) {
+					rightEdge.style.height = 0
+					slideRight()
+				} else {
+					rightEdgeHeight++
+					rightEdge.style.height = rightEdgeHeight + "px"
+					setTimeout(slideRight, 50)
+				}
+			}
+			slideRight()
+			
+			// 获取topEdge
+			var topEdge = document.getElementsByClassName("topEdge")[0]
+			var topEdgeStyle = window.getComputedStyle(topEdge)
+			function slideTop() {
+				var topEdgeWidth = parseFloat(topEdgeStyle.width)
+				if (topEdgeWidth <= 2) {
+					topEdge.style.width = 100 + "vw"
+					slideTop()
+				} else {
+					topEdgeWidth--
+					topEdge.style.width = topEdgeWidth + "px"
+					setTimeout(slideTop, 50)
+				}
+			}
+			slideTop()
+			
+			// 获取bottomEdge
+			var bottomEdge = document.getElementsByClassName("bottomEdge")[0]
+			var bottomEdgeStyle = window.getComputedStyle(bottomEdge)
+			
+			function slideBottom() {
+				var bottomEdgeWidth = parseFloat(bottomEdgeStyle.width)
+				var pageWidth = window.innerWidth
+				if (bottomEdgeWidth >= pageWidth) {
+					bottomEdge.style.width = 0
+					slideBottom()
+				} else {
+					bottomEdgeWidth++
+					bottomEdge.style.width = bottomEdgeWidth + "px"
+					setTimeout(slideBottom, 50)
+				}
+			}
+			slideBottom()
+			
+			/**************************雪花特效背景******************************/
+			var body = document.body
+			
+			const WIDTH = window.innerWidth
+			const HEIGHT = window.innerHeight
+			
+			// 创建小球
+			function createBox() {
+				var div = document.createElement("div")
+				div.setAttribute("class", "box")
+				
+				// 多个小球位置随机分布
+				var random = Math.random() * (WIDTH - 10)
+				div.style.left = random + "px"
+				
+				body.appendChild(div)
+			}
+			
+			// 创建多个小球
+			for (var i = 0; i < 20; i++) {
+				createBox()
+			}
+			
+			// // 点击小球拖动小球(有bug,所以注释了)
+			// var boxs = document.getElementsByClassName("box")
+			// for (var i = 0; i < boxs.length; i++) {
+			// 	var box = boxs[i]
+			// 	var yesNoDown = false
+			// 	box.addEventListener("mousedown", (event) => {
+			// 		yesNoDown = true
+			// 		var target = event.target
+			// 		// 获取鼠标当前的坐标值
+			// 		var mouseX = event.pageX
+			// 		var mouseY = event.pageY
+			// 		// 计算小球的坐标值
+			// 		var x = mouseX - 5
+			// 		var y = mouseY - 5
+			// 		// 通过元素的style属性设置样式
+			// 		target.style.left = x + "px"
+			// 		target.style.top = y + "px"
+			// 	})
+				
+			// 	document.addEventListener("mousemove", (event) => {
+			// 		if (yesNoDown) {
+			// 			var target = event.target
+			// 			// 获取鼠标当前的坐标值
+			// 			var mouseX = event.pageX
+			// 			var mouseY = event.pageY
+			// 			// 计算小球的坐标值
+			// 			var x = mouseX - 5
+			// 			var y = mouseY - 5
+			// 			// 通过元素的style属性设置样式
+			// 			target.style.left = x + "px"
+			// 			target.style.top = y + "px"
+			// 		}
+			// 	})
+				
+			// 	document.addEventListener("mouseup", () => {
+			// 		yesNoDown = false
+			// 	})
+			// }
+			
+			// 控制小球向下移动 -> 定时器反复执行
+			// 随机延迟
+			
+			// 定义一个数组来存放所有的随机数
+			var ranArr = []
+			for (var j = 0; j < 20; j++) {
+				var ranWaitTime = Math.random() * 48000
+				ranArr.push(ranWaitTime)
+			}
+			// console.log(ranArr)
+			
+			/*
+				以下是10个小球随机落下
+			*/
+			var box
+			setTimeout(function moveDown() {
+				// 先获取到小球
+				box = document.getElementsByClassName("box")[0]
+				
+				// 再获取到小球的样式
+				getBoxStyle()
+				
+				setTimeout(moveDown, 50)
+				
+			}, ranArr[0])
+			
+			setTimeout(function moveDown() {
+				// 先获取到小球
+				box = document.getElementsByClassName("box")[1]
+				
+				// 再获取到小球的样式
+				getBoxStyle()
+				
+				setTimeout(moveDown, 50)
+				
+			}, ranArr[1])
+			
+			setTimeout(function moveDown() {
+				// 先获取到小球
+				box = document.getElementsByClassName("box")[2]
+				
+				// 再获取到小球的样式
+				getBoxStyle()
+				
+				setTimeout(moveDown, 50)
+				
+			}, ranArr[2])
+			
+			setTimeout(function moveDown() {
+				// 先获取到小球
+				box = document.getElementsByClassName("box")[3]
+				
+				// 再获取到小球的样式
+				getBoxStyle()
+				
+				setTimeout(moveDown, 50)
+				
+			}, ranArr[3])
+			
+			setTimeout(function moveDown() {
+				// 先获取到小球
+				box = document.getElementsByClassName("box")[4]
+				
+				// 再获取到小球的样式
+				getBoxStyle()
+				
+				setTimeout(moveDown, 50)
+				
+			}, ranArr[4])
+			
+			setTimeout(function moveDown() {
+				// 先获取到小球
+				box = document.getElementsByClassName("box")[5]
+				
+				// 再获取到小球的样式
+				getBoxStyle()
+				
+				setTimeout(moveDown, 50)
+				
+			}, ranArr[5])
+			
+			setTimeout(function moveDown() {
+				// 先获取到小球
+				box = document.getElementsByClassName("box")[6]
+				
+				// 再获取到小球的样式
+				getBoxStyle()
+				
+				setTimeout(moveDown, 50)
+				
+			}, ranArr[6])
+			
+			setTimeout(function moveDown() {
+				// 先获取到小球
+				box = document.getElementsByClassName("box")[7]
+				
+				// 再获取到小球的样式
+				getBoxStyle()
+				
+				setTimeout(moveDown, 50)
+				
+			}, ranArr[7])
+			
+			setTimeout(function moveDown() {
+				// 先获取到小球
+				box = document.getElementsByClassName("box")[8]
+				
+				// 再获取到小球的样式
+				getBoxStyle()
+				
+				setTimeout(moveDown, 50)
+				
+			}, ranArr[8])
+			
+			setTimeout(function moveDown() {
+				// 先获取到小球
+				box = document.getElementsByClassName("box")[9]
+				
+				// 再获取到小球的样式
+				getBoxStyle()
+				
+				setTimeout(moveDown, 50)
+				
+			}, ranArr[9])
+			
+			setTimeout(function moveDown() {
+				// 先获取到小球
+				box = document.getElementsByClassName("box")[10]
+				
+				// 再获取到小球的样式
+				getBoxStyle()
+				
+				setTimeout(moveDown, 50)
+				
+			}, ranArr[10])
+			
+			setTimeout(function moveDown() {
+				// 先获取到小球
+				box = document.getElementsByClassName("box")[11]
+				
+				// 再获取到小球的样式
+				getBoxStyle()
+				
+				setTimeout(moveDown, 50)
+				
+			}, ranArr[11])
+			
+			setTimeout(function moveDown() {
+				// 先获取到小球
+				box = document.getElementsByClassName("box")[12]
+				
+				// 再获取到小球的样式
+				getBoxStyle()
+				
+				setTimeout(moveDown, 50)
+				
+			}, ranArr[12])
+			
+			setTimeout(function moveDown() {
+				// 先获取到小球
+				box = document.getElementsByClassName("box")[13]
+				
+				// 再获取到小球的样式
+				getBoxStyle()
+				
+				setTimeout(moveDown, 50)
+				
+			}, ranArr[13])
+			
+			setTimeout(function moveDown() {
+				// 先获取到小球
+				box = document.getElementsByClassName("box")[14]
+				
+				// 再获取到小球的样式
+				getBoxStyle()
+				
+				setTimeout(moveDown, 50)
+				
+			}, ranArr[14])
+			
+			setTimeout(function moveDown() {
+				// 先获取到小球
+				box = document.getElementsByClassName("box")[15]
+				
+				// 再获取到小球的样式
+				getBoxStyle()
+				
+				setTimeout(moveDown, 50)
+				
+			}, ranArr[15])
+			
+			setTimeout(function moveDown() {
+				// 先获取到小球
+				box = document.getElementsByClassName("box")[16]
+				
+				// 再获取到小球的样式
+				getBoxStyle()
+				
+				setTimeout(moveDown, 50)
+				
+			}, ranArr[16])
+			
+			setTimeout(function moveDown() {
+				// 先获取到小球
+				box = document.getElementsByClassName("box")[17]
+				
+				// 再获取到小球的样式
+				getBoxStyle()
+				
+				setTimeout(moveDown, 50)
+				
+			}, ranArr[17])
+			
+			setTimeout(function moveDown() {
+				// 先获取到小球
+				box = document.getElementsByClassName("box")[18]
+				
+				// 再获取到小球的样式
+				getBoxStyle()
+				
+				setTimeout(moveDown, 50)
+				
+			}, ranArr[18])
+			
+			setTimeout(function moveDown() {
+				// 先获取到小球
+				box = document.getElementsByClassName("box")[19]
+				
+				// 再获取到小球的样式
+				getBoxStyle()
+				
+				setTimeout(moveDown, 50)
+				
+			}, ranArr[19])
+			
+			// 获取小球样式
+			function getBoxStyle() {
+				var boxStyle = window.getComputedStyle(box)
+				// 获取到小球的top值
+				var boxTop = parseFloat(boxStyle.top)
+				
+				if (boxTop >= HEIGHT) {
+					box.style.top = -10 + "px"
+				} else {
+					boxTop++
+					box.style.top = boxTop + "px"
+				}
+			}
+		</script>
+	</body>
+</html>
