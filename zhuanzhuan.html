@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>转转烟雾卡片</title>
+    <link rel="stylesheet" href="./index.css" />
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: "微软雅黑";
+      }
+
+      section {
+        position: absolute;
+        width: 504px;
+        height: 598px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        background-color: #111;
+        overflow: hidden;
+      }
+
+      section .bg_alpha {
+        width: 100%;
+        text-align: center;
+        position: absolute;
+        bottom: 0;
+        color: #fff;
+        max-width: 800px;
+        user-select: none;
+        background: rgba(74, 74, 80, 0.8);
+      }
+
+      section .text {
+        margin: 20px;
+      }
+
+      section .text span {
+        position: relative;
+        display: inline-block;
+        cursor: pointer;
+      }
+
+      section .tip span {
+        position: relative;
+        display: inline-block;
+        cursor: pointer;
+      }
+
+      section .text span.active {
+        animation: smoke 2s linear forwards;
+      }
+
+      section .tip span.active {
+        animation: smoke 2s linear forwards;
+      }
+
+      @keyframes smoke {
+        0% {
+          opacity: 1;
+          filter: blur(0);
+          transform: translateX(0) translateY(0) rotate(0deg) scale(1);
+        }
+        100% {
+          opacity: 0;
+          filter: blur(20px);
+          transform: translateX(300px) translateY(-300px) rotate(720deg)
+            scale(4);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <section>
+      <img
+        src="https://cdn.jsdelivr.net/gh/extheor/images/zhuanzhuan.png"
+        alt=""
+      />
+      <div class="bg_alpha">
+        <p class="text"></p>
+        <p class="tip">转转烟雾卡片</p>
+      </div>
+    </section>
+  </body>
+  <script>
+    setInterval(() => {
+      var date = new Date();
+      var year = date.getFullYear();
+      var month = date.getMonth() + 1;
+      var date1 = date.getDate();
+      var hour = date.getHours();
+      var minutes = date.getMinutes();
+      var second = date.getSeconds();
+      var day =
+        year +
+        "年" +
+        month +
+        "月" +
+        date1 +
+        "日" +
+        hour +
+        "时" +
+        minutes +
+        "分" +
+        second +
+        "秒";
+      const text = document.querySelector(".text");
+      const tip = document.querySelector(".tip");
+      // 在页面中写入时间
+      text.textContent = day;
+      // 在页面中写入提示
+      if (hour >= 22) {
+        tip.textContent = "转转，已经这么晚了，早点休息哦~";
+      } else if (hour >= 6 && hour <= 10) {
+        tip.textContent = "转转，早上好呀";
+      } else if (hour >= 11 && hour <= 13) {
+        tip.textContent = "转转，到午饭时间了，吃饱了才有力气减肥";
+      } else if (hour >= 14 && hour <= 21) {
+        tip.textContent = "转转，下午好，美好的下午做些什么呢";
+      } else if (hour >= 0 && hour <= 5) {
+        tip.textContent = "转转，经常熬夜对身体不好呀";
+      }
+      text.innerHTML = text.textContent.replace(/\S/g, "<span>$&</span>");
+      tip.innerHTML = tip.textContent.replace(/\S/g, "<span>$&</span>");
+
+      const letters = document.querySelectorAll("span");
+      for (let i = 0; i < letters.length; i++) {
+        letters[i].addEventListener("mouseover", function () {
+          letters[i].classList.add("active");
+        });
+
+        letters[i].addEventListener("mouseout", function () {
+          setTimeout(() => {
+            letters[i].classList.remove("active");
+          }, 1000);
+        });
+      }
+    }, 2000);
+  </script>
+</html>
